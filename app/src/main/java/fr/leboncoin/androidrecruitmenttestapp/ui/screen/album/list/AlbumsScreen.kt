@@ -5,17 +5,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import com.adevinta.spark.components.progress.Spinner
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
+import com.adevinta.spark.components.progress.Spinner
 import com.adevinta.spark.components.scaffold.Scaffold
 import fr.leboncoin.androidrecruitmenttestapp.ui.AlbumItem
-import fr.leboncoin.domain.logger.GlobalLogger
 import fr.leboncoin.domain.model.Album
 
 @Composable
@@ -24,11 +23,10 @@ fun AlbumsScreen(
     onItemSelected: (Album) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    GlobalLogger.i("uiState $uiState")
+    val pagedAlbums = viewModel.pagedAlbums.collectAsLazyPagingItems()
 
     Scaffold(modifier = modifier) { paddingValues ->
-        if (uiState.isLoading) {
+        if (pagedAlbums.loadState.refresh is LoadState.Loading) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -44,13 +42,15 @@ fun AlbumsScreen(
                 contentPadding = paddingValues,
             ) {
                 items(
-                    items = uiState.albums,
-                    key = { album -> album.id }
-                ) { album ->
-                    AlbumItem(
-                        album = album,
-                        onItemSelected = onItemSelected,
-                    )
+                    count = pagedAlbums.itemCount,
+                    key = pagedAlbums.itemKey { it.id }
+                ) { index ->
+                    pagedAlbums[index]?.let { album ->
+                        AlbumItem(
+                            album = album,
+                            onItemSelected = onItemSelected,
+                        )
+                    }
                 }
             }
         }

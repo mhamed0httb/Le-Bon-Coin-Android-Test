@@ -2,13 +2,12 @@ package fr.leboncoin.androidrecruitmenttestapp.ui.screen.album.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import fr.leboncoin.androidrecruitmenttestapp.ui.screen.album.list.model.AlbumsUiState
+import fr.leboncoin.domain.model.Album
 import fr.leboncoin.domain.usecase.GetAlbumsUseCase
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,12 +15,7 @@ class AlbumsViewModel @Inject constructor(
     getAlbumsUseCase: GetAlbumsUseCase,
 ) : ViewModel() {
 
-    val uiState: StateFlow<AlbumsUiState> =
+    val pagedAlbums: Flow<PagingData<Album>> =
         getAlbumsUseCase.invoke()
-            .map { AlbumsUiState(albums = it, isLoading = false) }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5000),
-                AlbumsUiState(isLoading = true)
-            )
+            .cachedIn(viewModelScope)
 }

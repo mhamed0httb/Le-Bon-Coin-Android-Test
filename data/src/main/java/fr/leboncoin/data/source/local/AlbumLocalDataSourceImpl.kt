@@ -1,6 +1,8 @@
 package fr.leboncoin.data.source.local
 
+import androidx.paging.PagingSource
 import fr.leboncoin.data.source.local.dao.AlbumDao
+import fr.leboncoin.data.source.local.entity.AlbumEntity
 import fr.leboncoin.data.source.local.entity.toDomain
 import fr.leboncoin.data.source.local.entity.toEntity
 import fr.leboncoin.domain.model.Album
@@ -16,6 +18,10 @@ class AlbumLocalDataSourceImpl @Inject constructor(
         return albumDao.getAlbumsFlow().map { entities ->
             entities.map { it.toDomain() }
         }
+    }
+
+    override fun getAlbumsPagingSource(): PagingSource<Int, AlbumEntity> {
+        return albumDao.getAlbumsPagingSource()
     }
 
     override suspend fun getAlbums(): List<Album> {

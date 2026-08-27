@@ -1,6 +1,11 @@
 package fr.leboncoin.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import fr.leboncoin.data.source.local.AlbumLocalDataSource
+import fr.leboncoin.data.source.local.entity.toDomain
 import fr.leboncoin.data.source.network.api.AlbumApiService
 import fr.leboncoin.data.source.network.model.toDomain
 import fr.leboncoin.domain.logger.GlobalLogger
@@ -11,6 +16,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -37,6 +43,18 @@ class AlbumRepository @Inject constructor(
         }
 
         emitAll(albumLocalDataSource.getAlbumsFlow())
+    }
+
+    override fun getAlbumsPaged(): Flow<PagingData<Album>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 50,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { albumLocalDataSource.getAlbumsPagingSource() }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toDomain() }
+        }
     }
 
     override suspend fun getAlbumById(id: Int): Album? = withContext(Dispatchers.IO) {

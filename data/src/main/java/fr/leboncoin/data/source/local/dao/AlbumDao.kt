@@ -1,5 +1,6 @@
 package fr.leboncoin.data.source.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -11,6 +12,9 @@ import kotlinx.coroutines.flow.Flow
 interface AlbumDao {
     @Query("SELECT * FROM albums")
     fun getAlbumsFlow(): Flow<List<AlbumEntity>>
+
+    @Query("SELECT * FROM albums")
+    fun getAlbumsPagingSource(): PagingSource<Int, AlbumEntity>
 
     @Query("SELECT * FROM albums")
     suspend fun getAlbums(): List<AlbumEntity>
