@@ -51,6 +51,7 @@ android {
 
         implementation(libs.kotlin.serialization.json)
         implementation(libs.hilt.android)
+        implementation(libs.timber)
         ksp(libs.hilt.compiler)
 
         testImplementation(libs.junit)

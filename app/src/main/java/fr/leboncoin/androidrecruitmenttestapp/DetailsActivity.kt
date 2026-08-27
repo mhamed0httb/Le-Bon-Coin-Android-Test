@@ -22,7 +22,7 @@ class DetailsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        analyticsRepository.trackScreenView("Details")
+        analyticsRepository.trackScreenView(getString(R.string.screen_details))
 
         setContent {
             SparkTheme {
