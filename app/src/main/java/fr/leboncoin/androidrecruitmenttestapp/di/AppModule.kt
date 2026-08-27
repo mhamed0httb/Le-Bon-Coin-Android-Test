@@ -4,7 +4,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import fr.leboncoin.androidrecruitmenttestapp.utils.AnalyticsHelper
 import java.util.logging.Logger
 import javax.inject.Singleton
 
@@ -15,8 +14,4 @@ object AppModule {
     @Provides
     @Singleton
     fun provideLogger(): Logger = Logger.getGlobal()
-
-    @Provides
-    @Singleton
-    fun provideAnalyticsHelper(): AnalyticsHelper = AnalyticsHelper()
 }

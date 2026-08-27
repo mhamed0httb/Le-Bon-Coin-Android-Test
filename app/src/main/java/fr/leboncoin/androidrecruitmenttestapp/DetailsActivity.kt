@@ -10,20 +10,19 @@ import androidx.compose.ui.res.painterResource
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.image.Illustration
 import dagger.hilt.android.AndroidEntryPoint
-import fr.leboncoin.androidrecruitmenttestapp.utils.AnalyticsHelper
+import fr.leboncoin.domain.repository.AnalyticsRepository
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailsActivity : ComponentActivity() {
 
     @Inject
-    lateinit var analyticsHelper: AnalyticsHelper
+    lateinit var analyticsRepository: AnalyticsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        analyticsHelper.initialize(this)
-        analyticsHelper.trackScreenView("Details")
+        analyticsRepository.trackScreenView("Details")
 
         setContent {
             SparkTheme {

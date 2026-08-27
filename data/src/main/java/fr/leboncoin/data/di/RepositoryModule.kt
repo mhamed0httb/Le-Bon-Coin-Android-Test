@@ -5,6 +5,8 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import fr.leboncoin.data.repository.AlbumRepository
+import fr.leboncoin.data.repository.AnalyticsRepositoryImpl
+import fr.leboncoin.domain.repository.AnalyticsRepository
 import javax.inject.Singleton
 import fr.leboncoin.domain.repository.AlbumRepository as DomainAlbumRepository
 
@@ -14,4 +16,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindAlbumRepository(repository: AlbumRepository): DomainAlbumRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAnalyticsRepository(repository: AnalyticsRepositoryImpl): AnalyticsRepository
 }
