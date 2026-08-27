@@ -45,8 +45,12 @@ class AlbumRepository @Inject constructor(
         emitAll(albumLocalDataSource.getAlbumsFlow())
     }
 
-    override fun getAlbumsPaged(): Flow<PagingData<Album>> {
-        return Pager(
+    override fun getAlbumsPaged(): Flow<PagingData<Album>> = flow {
+        CoroutineScope(currentCoroutineContext()).launch {
+            fetchAndSaveRemoteAlbums()
+        }
+
+        val flow = Pager(
             config = PagingConfig(
                 pageSize = 50,
                 enablePlaceholders = false
@@ -55,6 +59,8 @@ class AlbumRepository @Inject constructor(
         ).flow.map { pagingData ->
             pagingData.map { it.toDomain() }
         }
+
+        emitAll(flow)
     }
 
     override suspend fun getAlbumById(id: Int): Album? = withContext(Dispatchers.IO) {

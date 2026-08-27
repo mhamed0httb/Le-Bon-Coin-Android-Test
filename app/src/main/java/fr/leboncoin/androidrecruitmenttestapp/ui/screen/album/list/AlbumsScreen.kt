@@ -14,7 +14,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.adevinta.spark.components.progress.Spinner
 import com.adevinta.spark.components.scaffold.Scaffold
-import fr.leboncoin.androidrecruitmenttestapp.ui.AlbumItem
+import fr.leboncoin.androidrecruitmenttestapp.ui.screen.album.list.component.AlbumItem
 import fr.leboncoin.domain.model.Album
 
 @Composable

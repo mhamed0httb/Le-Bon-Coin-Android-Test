@@ -1,4 +1,4 @@
-package fr.leboncoin.androidrecruitmenttestapp.ui
+package fr.leboncoin.androidrecruitmenttestapp.ui.screen.album.list.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

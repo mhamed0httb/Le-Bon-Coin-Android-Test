@@ -31,10 +31,18 @@ class MainActivity : ComponentActivity() {
                     viewModel = viewModel,
                     onItemSelected = {
                         analyticsRepository.trackSelection(it.id.toString())
-                        startActivity(Intent(this, DetailsActivity::class.java))
+                        startActivity(
+                            Intent(this, DetailsActivity::class.java).apply {
+                                putExtra(ALBUM_ID_KEY, it.id)
+                            }
+                        )
                     }
                 )
             }
         }
+    }
+
+    companion object {
+        const val ALBUM_ID_KEY = "album_id_key"
     }
 }
