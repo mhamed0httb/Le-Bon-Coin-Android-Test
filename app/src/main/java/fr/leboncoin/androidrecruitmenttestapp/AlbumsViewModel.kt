@@ -1,15 +1,17 @@
 package fr.leboncoin.androidrecruitmenttestapp
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.leboncoin.domain.model.Album
 import fr.leboncoin.domain.usecase.GetAlbumsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AlbumsViewModel(
+@HiltViewModel
+class AlbumsViewModel @Inject constructor(
     private val getAlbumsUseCase: GetAlbumsUseCase,
 ) : ViewModel() {
 
@@ -22,15 +24,6 @@ class AlbumsViewModel(
                 _albums.emit(getAlbumsUseCase())
             } catch (_: Exception) { /* TODO: Handle errors */
             }
-        }
-    }
-
-    class Factory(
-        private val getAlbumsUseCase: GetAlbumsUseCase,
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return AlbumsViewModel(getAlbumsUseCase) as T
         }
     }
 }

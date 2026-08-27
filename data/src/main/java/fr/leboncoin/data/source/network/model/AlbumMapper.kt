@@ -1,4 +1,4 @@
-package fr.leboncoin.data.network.model
+package fr.leboncoin.data.source.network.model
 
 import fr.leboncoin.domain.model.Album
 
