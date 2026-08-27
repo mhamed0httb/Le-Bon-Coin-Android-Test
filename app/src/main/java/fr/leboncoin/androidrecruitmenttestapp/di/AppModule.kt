@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @Provides
-    @Singleton
-    fun provideLogger(): Logger = Logger.getGlobal()
+//    @Provides
+//    @Singleton
+//    fun provideLogger(): Logger = Logger.getGlobal()
 }

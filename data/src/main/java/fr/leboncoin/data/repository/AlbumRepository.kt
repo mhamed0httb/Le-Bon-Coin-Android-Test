@@ -5,10 +5,14 @@ import fr.leboncoin.data.source.network.api.AlbumApiService
 import fr.leboncoin.data.source.network.model.toDomain
 import fr.leboncoin.domain.logger.GlobalLogger
 import fr.leboncoin.domain.model.Album
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import fr.leboncoin.domain.repository.AlbumRepository as DomainAlbumRepository
 
@@ -17,10 +21,9 @@ class AlbumRepository @Inject constructor(
     private val albumLocalDataSource: AlbumLocalDataSource,
 ) : DomainAlbumRepository {
 
-    override suspend fun getAlbums(): List<Album> {
-        return try {
+    override suspend fun getAlbums(): List<Album> = withContext(Dispatchers.IO) {
+        try {
             val remoteAlbums = albumApiService.getAlbums().toDomain()
-//            albumLocalDataSource.clearAlbums()
             albumLocalDataSource.saveAlbums(remoteAlbums)
             remoteAlbums
         } catch (e: Exception) {
@@ -29,24 +32,31 @@ class AlbumRepository @Inject constructor(
     }
 
     override fun getAlbumsFlow(): Flow<List<Album>> = flow {
-        emitAll(
-            albumLocalDataSource.getAlbumsFlow()
-        )
-    }.onStart {
-        fetchAndSaveRemoteAlbums()
+        CoroutineScope(currentCoroutineContext()).launch {
+            fetchAndSaveRemoteAlbums()
+        }
+
+        emitAll(albumLocalDataSource.getAlbumsFlow())
     }
 
-    override suspend fun getAlbumById(id: Int): Album? = albumLocalDataSource.getAlbumById(id)
+    override suspend fun getAlbumById(id: Int): Album? = withContext(Dispatchers.IO) {
+        albumLocalDataSource.getAlbumById(id)
+    }
 
-    override suspend fun saveAlbum(album: Album) = albumLocalDataSource.saveAlbum(album)
+    override suspend fun saveAlbum(album: Album) = withContext(Dispatchers.IO) {
+        albumLocalDataSource.saveAlbum(album)
+    }
 
-    override suspend fun deleteAlbum(id: Int) = albumLocalDataSource.deleteAlbum(id)
+    override suspend fun deleteAlbum(id: Int) = withContext(Dispatchers.IO) {
+        albumLocalDataSource.deleteAlbum(id)
+    }
 
     private suspend fun fetchAndSaveRemoteAlbums() {
+        GlobalLogger.i("START fetchAndSaveRemoteAlbums")
         try {
             val remoteAlbums = albumApiService.getAlbums().toDomain()
-//            albumLocalDataSource.clearAlbums()
             albumLocalDataSource.saveAlbums(remoteAlbums)
+            GlobalLogger.i("END fetchAndSaveRemoteAlbums")
         } catch (e: Exception) {
             GlobalLogger.e(e)
         }
