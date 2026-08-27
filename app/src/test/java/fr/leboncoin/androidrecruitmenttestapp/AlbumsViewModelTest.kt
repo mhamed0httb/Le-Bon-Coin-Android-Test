@@ -1,25 +1,28 @@
 package fr.leboncoin.androidrecruitmenttestapp
 
-import fr.leboncoin.data.network.api.AlbumApiService
-import fr.leboncoin.data.network.model.AlbumDto
-import fr.leboncoin.data.repository.AlbumRepository
+import fr.leboncoin.domain.model.Album
+import fr.leboncoin.domain.repository.AlbumRepository
+import fr.leboncoin.domain.usecase.GetAlbumsUseCase
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.util.logging.Logger
 
 class AlbumsViewModelTest {
 
     @Test
-    fun loadsAlbums_emitsNonEmptyList() {
-        val fakeService = object : AlbumApiService {
-            override suspend fun getAlbums(): List<AlbumDto> = listOf(
-                AlbumDto(id = 1, albumId = 1, title = "t", url = "u", thumbnailUrl = "tu")
+    fun loadsAlbums_emitsNonEmptyList() = runTest {
+        val fakeRepository = object : AlbumRepository {
+            override suspend fun getAlbums(): List<Album> = listOf(
+                Album(id = 1, albumId = 1, title = "t", url = "u", thumbnailUrl = "tu")
             )
         }
-        val repository = AlbumRepository(fakeService)
-        val vm = AlbumsViewModel(Logger.getGlobal(), repository)
+        val useCase = GetAlbumsUseCase(fakeRepository)
+        val vm = AlbumsViewModel(useCase)
 
-        assertTrue("Expected albums to be loaded", vm.albums.value.isNotEmpty())
+        vm.loadAlbums()
+        val result = vm.albums.first()
+
+        assertTrue("Expected albums to be loaded", result.isNotEmpty())
     }
 }
-

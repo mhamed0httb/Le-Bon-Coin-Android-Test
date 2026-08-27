@@ -2,6 +2,7 @@ package fr.leboncoin.androidrecruitmenttestapp.di
 
 import fr.leboncoin.androidrecruitmenttestapp.utils.AnalyticsHelper
 import fr.leboncoin.data.di.DataDependencies
+import fr.leboncoin.domain.usecase.GetAlbumsUseCase
 import java.util.logging.Logger
 
 interface AppDependenciesProvider {
@@ -12,4 +13,8 @@ class AppDependencies {
     val logger: Logger by lazy { Logger.getGlobal() }
     val analyticsHelper: AnalyticsHelper by lazy { AnalyticsHelper() }
     val dataDependencies: DataDependencies by lazy { DataDependencies() }
+
+    val getAlbumsUseCase: GetAlbumsUseCase by lazy {
+        GetAlbumsUseCase(dataDependencies.albumsRepository)
+    }
 }
