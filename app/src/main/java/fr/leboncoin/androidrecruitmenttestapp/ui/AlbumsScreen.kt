@@ -19,9 +19,8 @@ fun AlbumsScreen(
     onItemSelected: (Album) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val albums by viewModel.albums.collectAsStateWithLifecycle(emptyList())
+    val albums by viewModel.albums.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) { viewModel.loadAlbums() }
 
     Scaffold(modifier = modifier) {
         LazyColumn(
