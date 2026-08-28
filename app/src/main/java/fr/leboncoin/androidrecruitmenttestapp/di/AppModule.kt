@@ -43,7 +43,6 @@ object AppModule {
     ): ImageLoader {
         return ImageLoader.Builder(context)
             .components {
-                // Pass OkHttpClient via the OkHttp fetcher factory in Coil 3
                 add(
                     OkHttpNetworkFetcherFactory(
                         callFactory = { okHttpClient }

@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -95,5 +97,28 @@ fun AlbumItem(
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalSparkApi::class)
+@Preview(showBackground = true, name = "Album Item Preview")
+@PreviewScreenSizes
+@Composable
+private fun AlbumItemPreview() {
+    val sampleAlbum = Album(
+        id = 1,
+        albumId = 42,
+        title = "accusamus ea eos quam nesciunt eius",
+        url = "https://placehold.co/600x600/771796/white/png",
+        thumbnailUrl = "https://placehold.co/150x150/771796/white/png"
+    )
+
+    SparkTheme {
+        AlbumItem(
+            album = sampleAlbum,
+            isFavorite = true,
+            onFavoriteToggle = {},
+            onItemSelected = {}
+        )
     }
 }

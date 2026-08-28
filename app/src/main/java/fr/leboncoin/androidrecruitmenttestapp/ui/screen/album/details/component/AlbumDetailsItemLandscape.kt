@@ -10,29 +10,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.chips.ChipTinted
-import fr.leboncoin.androidrecruitmenttestapp.R
 import fr.leboncoin.androidrecruitmenttestapp.ui.component.FavoriteIcon
 import fr.leboncoin.domain.model.Album
 
@@ -41,78 +34,60 @@ import fr.leboncoin.domain.model.Album
 fun AlbumDetailItemLandscape(
     modifier: Modifier = Modifier,
     album: Album,
-    onBackClick: () -> Unit,
     onFavoriteToggle: (Album) -> Unit,
     isFavorite: Boolean
 ) {
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(R.string.screen_details)) },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-            )
-        },
+    Row(
         modifier = modifier
-    ) { innerPadding ->
-        Row(
+            .fillMaxSize()
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(album.url)
+                .size(600, 600)
+                .build(),
+            contentDescription = album.title,
+            contentScale = ContentScale.Crop,
+        )
+
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+                .fillMaxWidth()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(album.url)
-                    .size(600, 600)
-                    .build(),
-                contentDescription = album.title,
-                contentScale = ContentScale.Crop,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = album.title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = album.title,
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    FavoriteIcon(
-                        onClick = { onFavoriteToggle(album) },
-                        isFavorite = isFavorite
-                    )
-                }
+                FavoriteIcon(
+                    onClick = { onFavoriteToggle(album) },
+                    isFavorite = isFavorite
+                )
+            }
 
 
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    ChipTinted(
-                        text = "Album #${album.albumId}"
-                    )
-                    ChipTinted(
-                        text = "Track #${album.id}"
-                    )
-                }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                ChipTinted(
+                    text = "Album #${album.albumId}"
+                )
+                ChipTinted(
+                    text = "Track #${album.id}"
+                )
             }
         }
     }
+
 }
 
 @Preview(showBackground = true, name = "Album Details Preview")
+@PreviewScreenSizes
 @Composable
 private fun AlbumDetailItemLandscapePreview() {
     SparkTheme {
@@ -124,7 +99,6 @@ private fun AlbumDetailItemLandscapePreview() {
                 url = "https://placehold.co/600x600/771796/white/png",
                 thumbnailUrl = "https://placehold.co/150x150/771796/white/png"
             ),
-            onBackClick = {},
             onFavoriteToggle = {},
             isFavorite = false
         )

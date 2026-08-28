@@ -9,7 +9,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import fr.leboncoin.androidrecruitmenttestapp.R
 
 @Composable
 fun FavoriteIcon(
@@ -23,7 +25,12 @@ fun FavoriteIcon(
     ) {
         Icon(
             imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-            contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
+            contentDescription = stringResource(
+                if (isFavorite)
+                    R.string.content_description_remove_favorite
+                else
+                    R.string.content_description_add_favorite
+            ),
             tint = if (isFavorite) Color.Red else Color.Gray
         )
     }

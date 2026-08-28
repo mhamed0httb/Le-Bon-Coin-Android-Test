@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Android RecruitmentTest App</string>
     <string name="screen_details">Details</string>
+    <string name="screen_albums">Albums</string>
+    <string name="content_description_add_favorite">Add to favorites</string>
+    <string name="content_description_remove_favorite">Remove from favorites</string>
+    <string name="content_description_back">Back</string>
+    <string name="content_description_all_albums">Show all albums</string>
+    <string name="content_description_favorites_albums">Show favorite albums</string>
 </resources>

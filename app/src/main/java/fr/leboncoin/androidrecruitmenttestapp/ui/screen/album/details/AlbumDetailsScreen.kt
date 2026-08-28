@@ -1,13 +1,23 @@
 package fr.leboncoin.androidrecruitmenttestapp.ui.screen.album.details
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import fr.leboncoin.androidrecruitmenttestapp.R
 import fr.leboncoin.androidrecruitmenttestapp.ui.screen.album.details.component.AlbumDetailItem
 import fr.leboncoin.androidrecruitmenttestapp.ui.screen.album.details.component.AlbumDetailItemLandscape
 
@@ -34,26 +44,41 @@ fun AlbumDetailScreen(
     }
 
     (uiState as? AlbumDetailsUiState.Found)?.let { state ->
-        if (isLandscape) {
-            AlbumDetailItemLandscape(
-                modifier = modifier,
-                album = state.album,
-                onBackClick = onBackClick,
-                onFavoriteToggle = {
-                    viewModel.toggleISFavorite(it)
-                },
-                isFavorite = state.isFavorite
-            )
-        } else {
-            AlbumDetailItem(
-                modifier = modifier,
-                album = state.album,
-                onBackClick = onBackClick,
-                onFavoriteToggle = {
-                    viewModel.toggleISFavorite(it)
-                },
-                isFavorite = state.isFavorite
-            )
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = stringResource(R.string.screen_details)) },
+                    navigationIcon = {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    }
+                )
+            },
+            modifier = modifier
+        ) { innerPadding ->
+            if (isLandscape) {
+                AlbumDetailItemLandscape(
+                    modifier = Modifier.padding(innerPadding),
+                    album = state.album,
+                    onFavoriteToggle = {
+                        viewModel.toggleISFavorite(it)
+                    },
+                    isFavorite = state.isFavorite
+                )
+            } else {
+                AlbumDetailItem(
+                    modifier = Modifier.padding(innerPadding),
+                    album = state.album,
+                    onFavoriteToggle = {
+                        viewModel.toggleISFavorite(it)
+                    },
+                    isFavorite = state.isFavorite
+                )
+            }
         }
     }
 }
