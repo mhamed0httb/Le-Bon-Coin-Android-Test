@@ -69,4 +69,5 @@ The project adopts core **DDD** concepts to maintain a clear boundary between bu
 - **Navigation 3**: Adopt the next generation of Jetpack Navigation for improved flexibility and better decoupling of navigation logic from the UI.
 - **MVI (Model-View-Intent)**: Further centralize state changes through explicit intents.
 - **Modularization by Feature**: Split the app into feature modules (e.g., `:feature:album-list`) to improve build times and team autonomy.
+- **UI & Automation Testing**: Implement comprehensive Compose UI tests and end-to-end automation tests using Hilt and MockWebServer to ensure long-term stability.
 - **Deep Linking**: Enhanced integration with external app links.
