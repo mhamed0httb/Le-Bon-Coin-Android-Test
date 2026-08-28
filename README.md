@@ -36,7 +36,7 @@ The project adopts core **DDD** concepts to maintain a clear boundary between bu
 - **Repository Interfaces**: Define the contract for data operations, keeping the domain agnostic of the persistence mechanism.
 - **Separation of Concerns**: Each layer has a specific responsibility, preventing "leaky abstractions".
 
-## 4. Libraries & Justification
+## 4. Libraries
 
 ### Core / UI / Navigation
 - **Jetpack Compose**: Modern declarative UI framework.
