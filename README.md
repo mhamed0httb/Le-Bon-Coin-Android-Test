@@ -1,95 +1,74 @@
-# AndroidRecruitmentTestApp
-## ÉNONCÉ
+# Project Architecture & Technical Choices
 
-Vous devez améliorer une application native Android affichant la liste des items suivant (titres d'albums) : https://static.leboncoin.fr/img/shared/technical-test.json
+This document summarizes the architecture, patterns, and libraries applied to the Android Recruitment Test App.
 
-### Prérequis 
+## 1. Architecture Overview
+The project follows **Clean Architecture** principles and is organized into a **multi-module** structure to ensure separation of concerns, scalability, and testability.
 
-* Le projet est à réaliser sur la plateforme Android (API minimum 24) avec la dernière version stable d'Android Studio
-* Vous devez implémenter un système de persistance des données afin que les données puissent être disponibles offline, même après redémarrage de l'application
-* Vous êtes invité à modifier tout ce qui vous semble pertinent pour améliorer le code existant
-* Il y a des pièges et anomalies à débusquer et à corriger. Arriverez-vous à tous les corriger? 
-* Vous devez intégrer une fonctionnalité de mise en favoris qui persiste en local
-* Vous devez implementer un écran de détail
-* Vous êtes libre d'utiliser le langage et les librairies que vous voulez
-* Votre code doit être versionné sur un dépôt Git librement consultable. Vous êtes libre de créer plusieurs branches pour votre développement, mais nous ne relirons que la branche configurée par défaut, veillez à ce que celle-ci soit à jour
-* Un document récapitulant les choix d'architecture, des patterns et des librairies appliquées
+### Module Structure
+- **`:domain`**: The core layer containing business logic. It is independent of any framework.
+  - **Models**: Domain entities (e.g., `Album`).
+  - **UseCases**: Encapsulate specific business rules (e.g., `GetAlbumsUseCase`, `ToggleFavoriteUseCase`).
+  - **Repository Interfaces**: Defined here, implemented in the data layer.
+- **`:data`**: Handles data retrieval and persistence.
+  - **Repository Implementations**: Coordinates between network and local data sources.
+  - **Network**: Retrofit service and DTOs.
+  - **Local**: Room database, DAOs, and Entities.
+  - **Mappers**: Convert between DTOs/Entities and Domain Models.
+- **`:app`**: The presentation layer.
+  - **UI**: Jetpack Compose screens and components.
+  - **ViewModels**: Manage UI state and interact with UseCases (MVVM).
+  - **DI**: Hilt modules for dependency injection.
 
-### Nous observerons particulièrement 
+## 2. Design Patterns
+- **MVVM (Model-View-ViewModel)**: Decouples the UI from the business logic.
+- **UDF (Unidirectional Data Flow)**: The UI observes a single state stream (via `StateFlow`) and sends actions/events back to the ViewModel, ensuring a predictable data flow.
+- **Repository Pattern**: Abstracts data sources from the rest of the application.
+- **Mapper Pattern**: Ensures that domain models remain pure and independent of data source schemas.
+- **Dependency Injection**: Promotes loose coupling and facilitates testing.
+- **Singleton Pattern**: Used via Hilt for database, network clients, and repositories.
 
-* L'architecture 
-* Votre capacité à débusquer et corriger les bugs
-* L'aspect multi-modulaire
-* Les patterns appliqués
-* Les choix de librairies
-* Les performances de l'application
-* Les tests
-* L'utilisation d'un framework d'injection de dépendance
-* La justification des choix effectués
+## 3. DDD (Domain-Driven Design) Principles
+The project adopts core **DDD** concepts to maintain a clear boundary between business logic and technical implementation:
+- **Domain Layer**: The `:domain` module is the "heart" of the software, containing entities (`Album`) and business rules.
+- **Use Cases**: Act as application services that orchestrate the flow of data to and from the domain entities.
+- **Repository Interfaces**: Define the contract for data operations, keeping the domain agnostic of the persistence mechanism.
+- **Separation of Concerns**: Each layer has a specific responsibility, preventing "leaky abstractions".
 
-### Bonus
+## 4. Libraries & Justification
 
-* Votre capacité à faire évoluer l'existant et à planifier les évolutions.
-  On souhaite vous faire réfléchir à la planification des évolutions de l'application, et le documenter. 
+### Core / UI
+- **Jetpack Compose**: Modern declarative UI framework. Chosen for its productivity and ability to create reactive UIs easily.
+- **Spark UI**: Adevinta's design system library, used for consistent UI components.
+- **Coil**: An image loading library for Android backed by Kotlin Coroutines. It is lightweight and integrates seamlessly with Compose.
+- **Paging 3**: Used to handle large lists of albums efficiently, providing built-in support for loading states and error handling.
 
-### Attendu
+### Networking & Persistence
+- **Retrofit & OkHttp**: The industry standard for REST API communication.
+- **Kotlinx Serialization**: A modern, type-safe way to handle JSON parsing.
+- **Room**: A persistence library that provides an abstraction layer over SQLite, allowing for robust database access with compile-time checks.
 
-On attend que vous développiez cette app comme si c'était un projet professionnel. 
-Nous vous recommandons de prendre entre (~ 4 à 6 heures) pour le réaliser.
-Si plus de temps est nécessaire, merci de le demander.
+### Asynchrony & Reactivity
+- **Kotlin Coroutines**: For managing background tasks in a non-blocking way.
+- **Kotlin Flow**: Used for reactive data streams from the database and network to the UI.
 
-### Nous rejetterons le test si un des éléments suivants n'est pas présent:
+### Dependency Injection
+- **Hilt**: A standardized way to incorporate Dagger DI into Android apps. It simplifies boilerplate and manages component lifecycles automatically.
 
-* Tests unitaires
-* L'application crash systématiquement
-* La gestion des changements de configuration
-* Aucune justification des choix effectués
+### Testing
+- **JUnit 4**: Standard testing framework.
+- **MockK**: A mocking library specifically designed for Kotlin.
+- **Turbine**: A small library for testing Kotlin Flow.
+- **Coroutines Test**: Utilities for testing asynchronous code.
 
+## 4. Performance & Optimizations
+- **Offline First**: Data is first fetched from the network and saved to Room. The UI observes the local database, ensuring the app works offline.
+- **Image Caching**: Handled by Coil to reduce network usage and improve scroll performance.
+- **Memory Leak Detection**: **LeakCanary** is integrated in debug builds to catch potential memory leaks early.
 
----
-
-## ASSIGNMENT
-
-You must improve a native Android application displaying the following items (album titles): https://static.leboncoin.fr/img/shared/technical-test.json
-
-### Prerequisites
-
-* The project must be developed on the Android platform (minimum API 24) with the latest stable version of Android Studio
-* You must implement a data persistence system so that data can be available offline, even after restarting the application
-* You are invited to modify anything you deem relevant to improve the existing code
-* There are traps and bugs to uncover and fix. Will you be able to fix them all?
-* You must integrate a favorites feature that persists locally
-* You must implement a detail screen
-* You are free to use the language and libraries you want
-* Your code must be versioned on a freely accessible Git repository. You are free to create multiple branches for your development, but we will only review the default configured branch, make sure it is up to date
-* A document summarizing the architecture choices, patterns and libraries applied
-
-### We will particularly observe
-
-* The architecture
-* Your ability to find and fix bugs
-* The multi-modular aspect
-* The patterns applied
-* Library choices
-* Application performance
-* Tests
-* The use of a dependency injection framework
-* Justification of choices made
-
-### Bonus
-
-* Your ability to evolve the existing codebase and plan for future developments.
-  We want you to think about planning the application's evolutions, and document it.
-
-### Expected
-
-We expect you to develop this app as if it were a professional project.
-We recommend taking between (~4 to 6 hours) to complete it.
-If more time is needed, please ask.
-
-### We will reject the test if any of the following elements is not present:
-
-* Unit tests
-* The application crashes systematically
-* Configuration changes management
-* No justification for choices made
+## 5. Future Evolutions
+- **MVI (Model-View-Intent)**: Transition from MVVM+UDF to a full MVI architecture to further centralize state changes and simplify event handling.
+- **Modularization by Feature**: Currently modularized by layer. As the app grows, splitting by feature (e.g., `:feature:album-list`, `:feature:album-details`) would further improve build times and team autonomy.
+- **Deep Linking**: Implement navigation via URIs for better integration with external apps/notifications.
+- **Enhanced Caching**: Implement a more sophisticated TTL-based caching strategy for the network data.
+- **UI Testing**: Add more Compose UI tests and end-to-end tests using Hilt and MockWebServer.
