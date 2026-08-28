@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -31,6 +32,7 @@ import coil3.compose.AsyncImage
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.chips.ChipTinted
 import fr.leboncoin.androidrecruitmenttestapp.R
+import fr.leboncoin.androidrecruitmenttestapp.ui.component.FavoriteIcon
 import fr.leboncoin.domain.model.Album
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,6 +41,8 @@ fun AlbumDetailItem(
     modifier: Modifier = Modifier,
     album: Album,
     onBackClick: () -> Unit,
+    onFavoriteToggle: (Album) -> Unit,
+    isFavorite: Boolean
 ) {
 
     Scaffold(
@@ -77,11 +81,18 @@ fun AlbumDetailItem(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text(
-                    text = album.title,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = album.title,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    FavoriteIcon(
+                        onClick = { onFavoriteToggle(album) },
+                        isFavorite = isFavorite
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -110,7 +121,9 @@ private fun AlbumDetailItemPreview() {
                 url = "https://placehold.co/600x600/771796/white/png",
                 thumbnailUrl = "https://placehold.co/150x150/771796/white/png"
             ),
-            onBackClick = {}
+            onBackClick = {},
+            onFavoriteToggle = {},
+            isFavorite = false,
         )
     }
 }

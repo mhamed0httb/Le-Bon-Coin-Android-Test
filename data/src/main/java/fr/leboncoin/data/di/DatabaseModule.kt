@@ -12,6 +12,7 @@ import fr.leboncoin.data.source.local.AlbumLocalDataSource
 import fr.leboncoin.data.source.local.AlbumLocalDataSourceImpl
 import fr.leboncoin.data.source.local.AppDatabase
 import fr.leboncoin.data.source.local.dao.AlbumDao
+import fr.leboncoin.data.source.local.dao.FavoriteAlbumDao
 import javax.inject.Singleton
 
 @Module
@@ -39,6 +40,11 @@ abstract class DatabaseModule {
         @Provides
         fun provideAlbumDao(appDatabase: AppDatabase): AlbumDao {
             return appDatabase.albumDao()
+        }
+
+        @Provides
+        fun provideFavoriteAlbumDao(appDatabase: AppDatabase): FavoriteAlbumDao {
+            return appDatabase.favoriteAlbumDao()
         }
     }
 }

@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import fr.leboncoin.data.source.local.AlbumLocalDataSource
-import fr.leboncoin.data.source.local.entity.toDomain
+import fr.leboncoin.data.source.local.mapper.toDomain
 import fr.leboncoin.data.source.network.api.AlbumApiService
 import fr.leboncoin.data.source.network.model.toDomain
 import fr.leboncoin.domain.logger.GlobalLogger
@@ -16,6 +16,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,24 +27,6 @@ class AlbumRepository @Inject constructor(
     private val albumApiService: AlbumApiService,
     private val albumLocalDataSource: AlbumLocalDataSource,
 ) : DomainAlbumRepository {
-
-    override suspend fun getAlbums(): List<Album> = withContext(Dispatchers.IO) {
-        try {
-            val remoteAlbums = albumApiService.getAlbums().toDomain()
-            albumLocalDataSource.saveAlbums(remoteAlbums)
-            remoteAlbums
-        } catch (e: Exception) {
-            albumLocalDataSource.getAlbums()
-        }
-    }
-
-    override fun getAlbumsFlow(): Flow<List<Album>> = flow {
-        CoroutineScope(currentCoroutineContext()).launch {
-            fetchAndSaveRemoteAlbums()
-        }
-
-        emitAll(albumLocalDataSource.getAlbumsFlow())
-    }
 
     override fun getAlbumsPaged(): Flow<PagingData<Album>> = flow {
         CoroutineScope(currentCoroutineContext()).launch {
@@ -61,21 +44,32 @@ class AlbumRepository @Inject constructor(
         }
 
         emitAll(flow)
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun getAlbumById(id: Int): Album? = withContext(Dispatchers.IO) {
         albumLocalDataSource.getAlbumById(id)
     }
 
-    override suspend fun saveAlbum(album: Album) = withContext(Dispatchers.IO) {
-        albumLocalDataSource.saveAlbum(album)
+    override fun getAlbumByIdFlow(id: Int): Flow<Album?> {
+        return albumLocalDataSource.getAlbumByIdFlow(id).flowOn(Dispatchers.IO)
     }
 
-    override suspend fun deleteAlbum(id: Int) = withContext(Dispatchers.IO) {
-        albumLocalDataSource.deleteAlbum(id)
+    override suspend fun toggleFavorite(album: Album) = withContext(Dispatchers.IO) {
+        albumLocalDataSource.toggleFavorite(album.id)
     }
 
-    private suspend fun fetchAndSaveRemoteAlbums() {
+    override fun getFavoriteAlbumsIds(): Flow<Set<Int>> {
+        return albumLocalDataSource.getFavoriteAlbumsFlow()
+            .map { albums ->
+                albums.mapTo(hashSetOf()) { it.albumId }
+            }.flowOn(Dispatchers.IO)
+    }
+
+    override fun observeIsFavorite(albumId: Int): Flow<Boolean> {
+        return albumLocalDataSource.observeIsFavorite(albumId).flowOn(Dispatchers.IO)
+    }
+
+    private suspend fun fetchAndSaveRemoteAlbums() = withContext(Dispatchers.IO) {
         GlobalLogger.i("START fetchAndSaveRemoteAlbums")
         try {
             val remoteAlbums = albumApiService.getAlbums().toDomain()

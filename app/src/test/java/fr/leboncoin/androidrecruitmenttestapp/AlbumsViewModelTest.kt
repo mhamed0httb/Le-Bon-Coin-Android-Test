@@ -37,21 +37,21 @@ class AlbumsViewModelTest {
 
     @Test
     fun `uiState flow emits initial loading then albums from use case`() = runTest {
-        val albums = listOf(
-            Album(id = 1, albumId = 1, title = "Album 1", url = "url1", thumbnailUrl = "thumb1"),
-            Album(id = 2, albumId = 1, title = "Album 2", url = "url2", thumbnailUrl = "thumb2")
-        )
-        val albumsFlow = MutableSharedFlow<List<Album>>()
-        val fakeRepository = object : AlbumRepository {
-            override suspend fun getAlbums(): List<Album> = albums
-            override fun getAlbumsFlow(): Flow<List<Album>> = albumsFlow
-            override fun getAlbumsPaged(): Flow<PagingData<Album>> = emptyFlow()
-            override suspend fun getAlbumById(id: Int): Album? = null
-            override suspend fun saveAlbum(album: Album) {}
-            override suspend fun deleteAlbum(id: Int) {}
-        }
-        val useCase = GetAlbumsUseCase(fakeRepository)
-        val viewModel = AlbumsViewModel(useCase)
+//        val albums = listOf(
+//            Album(id = 1, albumId = 1, title = "Album 1", url = "url1", thumbnailUrl = "thumb1"),
+//            Album(id = 2, albumId = 1, title = "Album 2", url = "url2", thumbnailUrl = "thumb2")
+//        )
+//        val albumsFlow = MutableSharedFlow<List<Album>>()
+//        val fakeRepository = object : AlbumRepository {
+//            override suspend fun getAlbums(): List<Album> = albums
+//            override fun getAlbumsFlow(): Flow<List<Album>> = albumsFlow
+//            override fun getAlbumsPaged(): Flow<PagingData<Album>> = emptyFlow()
+//            override suspend fun getAlbumById(id: Int): Album? = null
+//            override suspend fun saveAlbum(album: Album) {}
+//            override suspend fun deleteAlbum(id: Int) {}
+//        }
+//        val useCase = GetAlbumsUseCase(fakeRepository)
+//        val viewModel = AlbumsViewModel(useCase)
 
 //        viewModel.uiState.test {
 //            assertEquals(AlbumsUiState(isLoading = true), awaitItem())

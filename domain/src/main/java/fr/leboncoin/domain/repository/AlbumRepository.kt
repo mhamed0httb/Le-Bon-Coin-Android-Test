@@ -5,10 +5,10 @@ import fr.leboncoin.domain.model.Album
 import kotlinx.coroutines.flow.Flow
 
 interface AlbumRepository {
-    suspend fun getAlbums(): List<Album>
-    fun getAlbumsFlow(): Flow<List<Album>>
     fun getAlbumsPaged(): Flow<PagingData<Album>>
     suspend fun getAlbumById(id: Int): Album?
-    suspend fun saveAlbum(album: Album)
-    suspend fun deleteAlbum(id: Int)
+    fun getAlbumByIdFlow(id: Int): Flow<Album?>
+    suspend fun toggleFavorite(album: Album)
+    fun getFavoriteAlbumsIds(): Flow<Set<Int>>
+    fun observeIsFavorite(albumId: Int): Flow<Boolean>
 }

@@ -33,18 +33,26 @@ fun AlbumDetailScreen(
         viewModel.getAlbum(albumId)
     }
 
-    (uiState as? AlbumDetailsUiState.Found)?.album?.let { album ->
+    (uiState as? AlbumDetailsUiState.Found)?.let { state ->
         if (isLandscape) {
             AlbumDetailItemLandscape(
                 modifier = modifier,
-                album = album,
-                onBackClick = onBackClick
+                album = state.album,
+                onBackClick = onBackClick,
+                onFavoriteToggle = {
+                    viewModel.toggleISFavorite(it)
+                },
+                isFavorite = state.isFavorite
             )
         } else {
             AlbumDetailItem(
                 modifier = modifier,
-                album = album,
-                onBackClick = onBackClick
+                album = state.album,
+                onBackClick = onBackClick,
+                onFavoriteToggle = {
+                    viewModel.toggleISFavorite(it)
+                },
+                isFavorite = state.isFavorite
             )
         }
     }

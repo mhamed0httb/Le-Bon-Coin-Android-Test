@@ -33,6 +33,7 @@ import coil3.request.ImageRequest
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.chips.ChipTinted
 import fr.leboncoin.androidrecruitmenttestapp.R
+import fr.leboncoin.androidrecruitmenttestapp.ui.component.FavoriteIcon
 import fr.leboncoin.domain.model.Album
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,6 +42,8 @@ fun AlbumDetailItemLandscape(
     modifier: Modifier = Modifier,
     album: Album,
     onBackClick: () -> Unit,
+    onFavoriteToggle: (Album) -> Unit,
+    isFavorite: Boolean
 ) {
 
     Scaffold(
@@ -79,11 +82,20 @@ fun AlbumDetailItemLandscape(
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                Text(
-                    text = album.title,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = album.title,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    FavoriteIcon(
+                        onClick = { onFavoriteToggle(album) },
+                        isFavorite = isFavorite
+                    )
+                }
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -112,7 +124,9 @@ private fun AlbumDetailItemLandscapePreview() {
                 url = "https://placehold.co/600x600/771796/white/png",
                 thumbnailUrl = "https://placehold.co/150x150/771796/white/png"
             ),
-            onBackClick = {}
+            onBackClick = {},
+            onFavoriteToggle = {},
+            isFavorite = false
         )
     }
 }

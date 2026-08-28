@@ -23,14 +23,17 @@ import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.card.Card
 import com.adevinta.spark.components.chips.ChipTinted
+import fr.leboncoin.androidrecruitmenttestapp.ui.component.FavoriteIcon
 import fr.leboncoin.domain.model.Album
 
 @OptIn(ExperimentalSparkApi::class)
 @Composable
 fun AlbumItem(
-    album: Album,
-    onItemSelected: (Album) -> Unit,
     modifier: Modifier = Modifier,
+    album: Album,
+    onFavoriteToggle: (Album) -> Unit,
+    onItemSelected: (Album) -> Unit,
+    isFavorite: Boolean
 ) {
     Card(
         modifier = modifier
@@ -47,7 +50,7 @@ fun AlbumItem(
                     .size(150, 150)
                     .build(),
                 contentDescription = album.title,
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxHeight()
                     .aspectRatio(1f),
                 contentScale = ContentScale.Crop
@@ -58,12 +61,24 @@ fun AlbumItem(
                     .fillMaxWidth()
                     .padding(14.dp),
             ) {
-                Text(
-                    text = album.title,
-                    style = SparkTheme.typography.caption,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Text(
+                        text = album.title,
+                        style = SparkTheme.typography.caption,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    FavoriteIcon(
+                        onClick = { onFavoriteToggle(album) },
+                        isFavorite = isFavorite
+                    )
+                }
 
                 Spacer(Modifier.weight(1f))
 
