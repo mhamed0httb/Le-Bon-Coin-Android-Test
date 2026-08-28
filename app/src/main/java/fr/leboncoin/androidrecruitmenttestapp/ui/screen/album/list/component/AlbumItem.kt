@@ -18,10 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import coil3.network.NetworkHeaders
-import coil3.network.httpHeaders
 import coil3.request.ImageRequest
-import coil3.request.crossfade
 import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.card.Card
@@ -43,15 +40,11 @@ fun AlbumItem(
         onClick = { onItemSelected(album) },
     ) {
         Row {
+
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(album.thumbnailUrl)
-                    .httpHeaders(
-                        NetworkHeaders.Builder()
-                            .add("User-Agent", "LeboncoinApp/1.0")
-                            .build()
-                    )
-                    .crossfade(true)
+                    .size(150, 150)
                     .build(),
                 contentDescription = album.title,
                 modifier = modifier

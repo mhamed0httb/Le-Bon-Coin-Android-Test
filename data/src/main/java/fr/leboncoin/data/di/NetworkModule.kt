@@ -13,7 +13,12 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.create
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ApiClient
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -25,7 +30,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
+    fun provideRetrofit(@ApiClient okHttpClient: OkHttpClient, json: Json): Retrofit {
         val contentType = "application/json".toMediaType()
         return Retrofit.Builder()
             .baseUrl(AlbumApiService.BASE_URL)
@@ -36,6 +41,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @ApiClient
     fun provideOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
         if (BuildConfig.DEBUG) {

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,13 +20,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.chips.ChipTinted
 import fr.leboncoin.androidrecruitmenttestapp.R
@@ -35,7 +37,7 @@ import fr.leboncoin.domain.model.Album
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlbumDetailItem(
+fun AlbumDetailItemLandscape(
     modifier: Modifier = Modifier,
     album: Album,
     onBackClick: () -> Unit,
@@ -57,25 +59,25 @@ fun AlbumDetailItem(
         },
         modifier = modifier
     ) { innerPadding ->
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
         ) {
             AsyncImage(
-                model = album.url,
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(album.url)
+                    .size(600, 600)
+                    .build(),
                 contentDescription = album.title,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
             )
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 Text(
                     text = album.title,
@@ -100,9 +102,9 @@ fun AlbumDetailItem(
 
 @Preview(showBackground = true, name = "Album Details Preview")
 @Composable
-private fun AlbumDetailItemPreview() {
+private fun AlbumDetailItemLandscapePreview() {
     SparkTheme {
-        AlbumDetailItem(
+        AlbumDetailItemLandscape(
             album = Album(
                 id = 1,
                 albumId = 42,
