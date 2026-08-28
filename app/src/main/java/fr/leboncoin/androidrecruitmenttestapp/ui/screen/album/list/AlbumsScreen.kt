@@ -5,11 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,6 +35,8 @@ fun AlbumsScreen(
     val pagedAlbums = viewModel.pagedAlbums.collectAsLazyPagingItems()
     val favoritesIds by viewModel.favorites.collectAsStateWithLifecycle()
 
+    val gridState = rememberLazyGridState()
+
     Scaffold(modifier = modifier) { paddingValues ->
         if (pagedAlbums.loadState.refresh is LoadState.Loading) {
             Box(
@@ -47,56 +48,29 @@ fun AlbumsScreen(
                 Spinner()
             }
         } else {
-            if (isLandscape) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = paddingValues
-                ) {
-                    items(
-                        count = pagedAlbums.itemCount,
-                        key = pagedAlbums.itemKey { it.id }
-                    ) { index ->
-                        pagedAlbums[index]?.let { album ->
-                            val isFavorite by remember(album.id, favoritesIds) {
-                                derivedStateOf { favoritesIds.contains(album.id) }
-                            }
-                            AlbumItem(
-                                album = album,
-                                onItemSelected = onItemSelected,
-                                onFavoriteToggle = {
-                                    viewModel.toggleFavorite(it)
-                                },
-                                isFavorite = isFavorite
-                            )
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(if (isLandscape) 2 else 1),
+                state = gridState,
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = paddingValues
+            ) {
+                items(
+                    count = pagedAlbums.itemCount,
+                    key = pagedAlbums.itemKey { it.id }
+                ) { index ->
+                    pagedAlbums[index]?.let { album ->
+                        val isFavorite = remember(album.id, favoritesIds) {
+                            favoritesIds.contains(album.id)
                         }
-                    }
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = paddingValues,
-                ) {
-                    items(
-                        count = pagedAlbums.itemCount,
-                        key = pagedAlbums.itemKey { it.id }
-                    ) { index ->
-                        pagedAlbums[index]?.let { album ->
-                            val isFavorite by remember(album.id, favoritesIds) {
-                                derivedStateOf { favoritesIds.contains(album.id) }
-                            }
-                            AlbumItem(
-                                album = album,
-                                onItemSelected = onItemSelected,
-                                onFavoriteToggle = {
-                                    viewModel.toggleFavorite(it)
-                                },
-                                isFavorite = isFavorite
-                            )
-                        }
+
+                        AlbumItem(
+                            album = album,
+                            onItemSelected = onItemSelected,
+                            onFavoriteToggle = { viewModel.toggleFavorite(it) },
+                            isFavorite = isFavorite
+                        )
                     }
                 }
             }
