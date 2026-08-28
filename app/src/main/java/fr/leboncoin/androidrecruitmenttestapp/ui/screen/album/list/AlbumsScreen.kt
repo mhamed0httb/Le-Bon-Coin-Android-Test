@@ -10,13 +10,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -50,7 +44,6 @@ fun AlbumsScreen(
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val pagedAlbums = viewModel.pagedAlbums.collectAsLazyPagingItems()
     val favoritesIds by viewModel.favorites.collectAsStateWithLifecycle()
-    val showOnlyFavorites by viewModel.showOnlyFavorites.collectAsStateWithLifecycle()
 
     val gridState = rememberLazyGridState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -61,20 +54,6 @@ fun AlbumsScreen(
             TopAppBar(
                 title = { Text(text = stringResource(R.string.screen_albums)) },
                 scrollBehavior = scrollBehavior,
-                actions = {
-                    IconButton(onClick = { viewModel.toggleOnlyFavorites() }) {
-                        Icon(
-                            imageVector = if (showOnlyFavorites) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                            contentDescription = stringResource(
-                                if (showOnlyFavorites)
-                                    R.string.content_description_all_albums
-                                else
-                                    R.string.content_description_favorites_albums
-                            ),
-                            tint = if (showOnlyFavorites) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
             )
         },
     ) { paddingValues ->
