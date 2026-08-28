@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
@@ -25,6 +26,7 @@ import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.card.Card
 import com.adevinta.spark.components.chips.ChipTinted
+import fr.leboncoin.androidrecruitmenttestapp.R
 import fr.leboncoin.androidrecruitmenttestapp.ui.component.FavoriteIcon
 import fr.leboncoin.domain.model.Album
 
@@ -89,10 +91,10 @@ fun AlbumItem(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     ChipTinted(
-                        text = "Album #${album.albumId}"
+                        text = stringResource(R.string.album_id_format, album.albumId)
                     )
                     ChipTinted(
-                        text = "Track #${album.id}"
+                        text = stringResource(R.string.track_id_format, album.id)
                     )
                 }
             }

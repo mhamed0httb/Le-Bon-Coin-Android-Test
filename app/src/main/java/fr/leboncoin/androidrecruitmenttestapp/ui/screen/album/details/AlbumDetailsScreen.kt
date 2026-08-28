@@ -52,7 +52,7 @@ fun AlbumDetailScreen(
                         IconButton(onClick = onBackClick) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
+                                contentDescription = stringResource(R.string.content_description_back)
                             )
                         }
                     }

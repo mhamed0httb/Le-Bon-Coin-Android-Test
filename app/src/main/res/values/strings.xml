@@ -7,4 +7,6 @@
     <string name="content_description_back">Back</string>
     <string name="content_description_all_albums">Show all albums</string>
     <string name="content_description_favorites_albums">Show favorite albums</string>
+    <string name="album_id_format">Album #%1$d</string>
+    <string name="track_id_format">Track #%1$d</string>
 </resources>
