@@ -57,6 +57,13 @@ The project adopts core **DDD** concepts to maintain a clear boundary between bu
 ### Dependency Injection
 - **Hilt**: Simplifies Dagger DI boilerplate and manages component lifecycles.
 
+### Logging
+- **Timber**: A powerful logging library built on top of the native `Log` class.
+    - **Automatic Tagging**: Automatically infers the tag based on the calling class, reducing boilerplate and potential for manual tagging errors.
+    - **Tree API**: Allows "planting" different behavior for different build types (e.g., logging to Logcat in debug, but sending to a crash reporting service or staying silent in release).
+    - **Security**: Prevents leaking sensitive information in production by easily disabling logging in release builds.
+    - **Formatting**: Provides cleaner syntax and built-in support for string formatting and logging exceptions.
+
 ### Testing
 - **JUnit 4**, **MockK**, **Turbine**, and **Coroutines Test**.
 
