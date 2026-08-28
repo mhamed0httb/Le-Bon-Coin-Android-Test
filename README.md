@@ -19,6 +19,7 @@ The project follows **Clean Architecture** principles and is organized into a **
   - **UI**: Jetpack Compose screens and components.
   - **ViewModels**: Manage UI state and interact with UseCases (MVVM).
   - **DI**: Hilt modules for dependency injection.
+  - **Navigation**: Jetpack Navigation Compose with structured routes and custom transitions.
 
 ## 2. Design Patterns
 - **MVVM (Model-View-ViewModel)**: Decouples the UI from the business logic.
@@ -37,38 +38,35 @@ The project adopts core **DDD** concepts to maintain a clear boundary between bu
 
 ## 4. Libraries & Justification
 
-### Core / UI
-- **Jetpack Compose**: Modern declarative UI framework. Chosen for its productivity and ability to create reactive UIs easily.
-- **Spark UI**: Adevinta's design system library, used for consistent UI components.
-- **Coil**: An image loading library for Android backed by Kotlin Coroutines. It is lightweight and integrates seamlessly with Compose.
-- **Paging 3**: Used to handle large lists of albums efficiently, providing built-in support for loading states and error handling.
+### Core / UI / Navigation
+- **Jetpack Compose**: Modern declarative UI framework.
+- **Jetpack Navigation Compose**: Handles screen navigation and transitions with a structured route system.
+- **Spark UI**: Adevinta's design system library for consistent UI components.
+- **Coil**: Lightweight image loading library for Android.
+- **Paging 3**: Efficiently handles large lists of albums with built-in loading and error states.
 
 ### Networking & Persistence
-- **Retrofit & OkHttp**: The industry standard for REST API communication.
-- **Kotlinx Serialization**: A modern, type-safe way to handle JSON parsing.
-- **Room**: A persistence library that provides an abstraction layer over SQLite, allowing for robust database access with compile-time checks.
+- **Retrofit & OkHttp**: Industry standard for REST API communication.
+- **Kotlinx Serialization**: Type-safe JSON parsing.
+- **Room**: Abstraction layer over SQLite for robust database access.
 
 ### Asynchrony & Reactivity
-- **Kotlin Coroutines**: For managing background tasks in a non-blocking way.
-- **Kotlin Flow**: Used for reactive data streams from the database and network to the UI.
+- **Kotlin Coroutines**: For non-blocking background tasks.
+- **Kotlin Flow**: Reactive data streams from database/network to UI.
 
 ### Dependency Injection
-- **Hilt**: A standardized way to incorporate Dagger DI into Android apps. It simplifies boilerplate and manages component lifecycles automatically.
+- **Hilt**: Simplifies Dagger DI boilerplate and manages component lifecycles.
 
 ### Testing
-- **JUnit 4**: Standard testing framework.
-- **MockK**: A mocking library specifically designed for Kotlin.
-- **Turbine**: A small library for testing Kotlin Flow.
-- **Coroutines Test**: Utilities for testing asynchronous code.
+- **JUnit 4**, **MockK**, **Turbine**, and **Coroutines Test**.
 
-## 4. Performance & Optimizations
-- **Offline First**: Data is first fetched from the network and saved to Room. The UI observes the local database, ensuring the app works offline.
-- **Image Caching**: Handled by Coil to reduce network usage and improve scroll performance.
-- **Memory Leak Detection**: **LeakCanary** is integrated in debug builds to catch potential memory leaks early.
+## 5. Performance & Optimizations
+- **Offline First**: Data is fetched from network and cached in Room; the UI observes the database.
+- **Image Caching**: Handled by Coil.
+- **Memory Leak Detection**: LeakCanary is used in debug builds.
 
-## 5. Future Evolutions
-- **MVI (Model-View-Intent)**: Transition from MVVM+UDF to a full MVI architecture to further centralize state changes and simplify event handling.
-- **Modularization by Feature**: Currently modularized by layer. As the app grows, splitting by feature (e.g., `:feature:album-list`, `:feature:album-details`) would further improve build times and team autonomy.
-- **Deep Linking**: Implement navigation via URIs for better integration with external apps/notifications.
-- **Enhanced Caching**: Implement a more sophisticated TTL-based caching strategy for the network data.
-- **UI Testing**: Add more Compose UI tests and end-to-end tests using Hilt and MockWebServer.
+## 6. Future Evolutions
+- **Navigation 3**: Adopt the next generation of Jetpack Navigation for improved flexibility and better decoupling of navigation logic from the UI.
+- **MVI (Model-View-Intent)**: Further centralize state changes through explicit intents.
+- **Modularization by Feature**: Split the app into feature modules (e.g., `:feature:album-list`) to improve build times and team autonomy.
+- **Deep Linking**: Enhanced integration with external app links.
